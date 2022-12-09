@@ -36,7 +36,8 @@ Fiesta: Fast incremental euclidean distance fields for online motion planning of
   * SDF update frequency 20Hz
   * SDF 是从高度值算来的，把机器人近似成一个bounding box
   * MPC中的约束形式：![1670517883236](image/SDF/1670517883236.png)
-*
+* Walking Posture Adaptation for Legged Robot Navigation in Confined Spaces
+  * a robot-centric multi-elevation map
 
 ## SDF in trajectory planning
 
