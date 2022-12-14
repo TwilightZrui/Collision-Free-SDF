@@ -1,35 +1,58 @@
-Distance Transforms of
-Sampled Functions
+## SDF code 实践
 
-欧几里得符号距离场（ESDF）可以很方便的对障碍物进行距离和梯度信息的查询，对空中机器人的在线运动规划具有重要意义。如何快速地生成ESDF地图是进行实时运动规划的重点
+[SDF_test gitee code(run)](https://gitee.com/kin_zhang/sdf_test#https://gitee.com/link?target=https%3A%2F%2Fwww.cnblogs.com%2Fkin-zhang%2Fp%2F16310244.html)
 
-Voxblox [24] and FIESTA [25] are novel tools for volumetric
-ESDF mapping.
+[SDF explain](https://jasmcole.com/2019/10/03/signed-distance-fields/)
 
-Collision-free
-mpc for legged robots in static and dynamic scenes,
+[【基础计算】ESDF栅格距离图计算并行加速版](https://www.cnblogs.com/kin-zhang/p/16310244.html)
 
-FIESTA,速度快
-我们在速度、精度上都是5-10倍的提升。
-Fiesta: Fast incremental euclidean distance fields for online motion planning of aerial robots
+## TSDF & ESDF
 
-[https://github.com/fzi-forschungszentrum-informatik/gpu-voxels](https://github.com/fzi-forschungszentrum-informatik/gpu-voxels)
+ 欧几里得符号距离场（ESDF）可以很方便的对障碍物进行距离和梯度信息的查询
 
-在四足机器人运动中，SDF需要留意的是：
+## 需要关注的点
 
+* 如何快速地生成ESDF/TSDF地图，满足motion planning频率要求
 * Computation time for constructing
 * Querying SDF time
 * SDF是用的什么形式的地图：voxel map / elevation map
 
-为什么要把机器人各个部分近似成球体，因为方便查询球体中心到障碍物的距离，查询的点少，高效，算力小。
+## SDF生成方法优劣比较
 
 SDF from elevation map > Voxblox(fast)
+FIESTA > Voxblox(fast、accuracy)
 
-FIESTA > Voxblox(fast)
+## map package
 
-需要关注的问题：
+[gpu-voxels git package](https://github.com/fzi-forschungszentrum-informatik/gpu-voxels)
 
-### spherical approximations of collision bodies
+[https://blog.csdn.net/Travis_X/article/details/115506278](https://blog.csdn.net/Travis_X/article/details/115506278)
+
+## Spherical approximations of collision bodies
+
+* decomposing the robot’s collision bodies for collision avoidance.
+* 为什么要把机器人各个部分近似成球体，因为方便查询球体中心到障碍物的距离，查询的点少，高效，算力小。
+* Approach:
+  * 2018-ISR-Computation_of_Collision_Distance_and_Gradient_using_an_Automatic_Sphere_Approximation_of_the_Robot_Model_with_Bounded_Error
+
+### 地图构建方式
+
+### Voxblox
+
+* 将传感器数据(RGBD, 点云)转换为TSDF
+* 使用TSDF转化为occupancy网格
+* 使用batch方法计算ESDF（根据TSDF使用 propagate的方式 更新ESDF）
+* [voxblox 方法和代码理解](https://wenku.baidu.com/view/d1b3cf0e4873f242336c1eb91a37f111f1850da4.html?_wkts_=1670953839161&bdQuery=voxel+octomap)
+* ![1671003871077](image/SDF/1671003871077.png)
+
+### FIESTA
+
+* 使用光线追踪法将点云叠加到占有栅格地图中，然后将所有占用状态发生改变的体素分别添加到insertQueue和deleteQueue两个队列中
+  使用一个名为ESDF更新初始化的过程，将两个队列的内容合并到updateQueue队列中，并使用基于广度优先搜索算法(BFS)的ESDF更新算法更新所有可能更改的体素。
+* Run FIESTA package blog:
+  * [https://blog.csdn.net/Travis_X/article/details/115506278](https://blog.csdn.net/Travis_X/article/details/115506278)
+*
+* ![1671003918335](image/SDF/1671003918335.png)
 
 ## SDF from  Elevation map(2.5D)
 
@@ -59,7 +82,6 @@ FIESTA > Voxblox(fast)
 ### package
 
 * elevation_map (RAW)
-*
 
 ### Paper
 
@@ -72,12 +94,24 @@ FIESTA > Voxblox(fast)
 
 ### Ref
 
-## SDF from 3D volumetric maps
+## SDF from 3D volumetric maps(ESDF)
 
 ### package
 
 * Voxblox
 * FIESTA
+  * [https://www.sohu.com/a/345922274_715754](https://www.sohu.com/a/345922274_715754)
+
+### Paper
+
+* A Collision-Free MPC for Whole-Body Dynamic Locomotion and
+  Manipulation
+  * 球体近似方法： 2018-ISR-Computation_of_Collision_Distance_and_Gradient_using_an_Automatic_Sphere_Approximation_of_the_Robot_Model_with_Bounded_Error
+  * ESDF地图构建方法：
+    * FIESTA ： creates an occupancy map and uses it to compute the SDF map.
+  * ESDF在优化问题中使用形式：
+    * ![1670825295834](image/SDF/1670825295834.png)
+    * ![1670825315479](image/SDF/1670825315479.png)
 
 ## SDF in trajectory planning
 
