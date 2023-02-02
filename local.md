@@ -43,7 +43,3 @@ REF code:
 2. bag播放数据（云深处二楼bag），在真值运动轨迹下，建立local ESDF map
 3. MPC cost && constraint code
 4. 在真值轨迹上(模仿的全局路径)，做局部轨迹
-
-## project
-
-误差测试接口

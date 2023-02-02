@@ -73,6 +73,7 @@ FIESTA > Voxblox(fast、accuracy)
     * 2007-IJRR-An Efficient Extension to Elevation Maps for Outdoor Terrain Mapping and Loop Closing
   * ![1670763154465](image/SDF/1670763154465.png)
   * 用elevation map的上置信区间生成了SDF
+*
 
 ## SDF from muti-elevation-map(2.5D~3D)
 
@@ -118,3 +119,46 @@ FIESTA > Voxblox(fast、accuracy)
 * 2013_CHOMP_Covariant Hamiltonian optimization for motion planning
 * CHOMP has been the foundation of many motion planners
   foundation of many motion planners
+
+## SDF in elevation map
+
+  1. 空间中一个点到最近障碍物的欧式平方距离：
+  ![1675337525178](image/SDF/1675337525178.png)
+  ![1675337548266](image/SDF/1675337548266.png)：障碍物0，empty cells 无穷
+
+  2.简化计算
+![1675338498488](image/SDF/1675338498488.png)
+![1675338556272](image/SDF/1675338556272.png)
+![1675338568179](image/SDF/1675338568179.png)
+(evaluation of the elevation map)
+
+ref:
+“Distance transforms of sampled functions,”
+
+3.STEP 2中的计算产生问题：
+当前计算SDF使用的是cell 中心点的距离到障碍物中心点的距离，会导致SDF梯度不连续
+![1675339750117](image/SDF/1675339750117.png)
+
+解决办法：
+使用cell center到occupied /free cell边界的距离
+通过调整[ref]来解决问题的离散性
+![1675341159176](image/SDF/1675341159176.png)
+![1675341327802](image/SDF/1675341327802.png): cell in local elevation map
+ d(·, ·) ：a function that returns the squared distance between the center of one cell and the border of another:
+![1675341170862](image/SDF/1675341170862.png)
+r：the resolution of the map
+ref:
+2017-RAS-Real-Time Motion Planning of Legged Robots: A Model Predictive Control Approach
+
+4.
+
+compute distance transforms
+
+ref:
+A direct method for trajectory
+optimization of rigid bodies through contact
+
+5.for each height in parallel
+
+ref:
+“Distance transforms of sampled functions,”
