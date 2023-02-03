@@ -10,17 +10,17 @@
 
  欧几里得符号距离场（ESDF）可以很方便的对障碍物进行距离和梯度信息的查询
 
-## 需要关注的点
+## SDF需要关注的要点
 
 * 如何快速地生成ESDF/TSDF地图，满足motion planning频率要求
 * Computation time for constructing
 * Querying SDF time
 * SDF是用的什么形式的地图：voxel map / elevation map
 
-## SDF生成方法优劣比较
+## SDF生成方法比较
 
 SDF from elevation map > Voxblox(fast)
-FIESTA > Voxblox(fast、accuracy)
+GIE > FIESTA > Voxblox(fast、accuracy)
 
 ## map package
 
@@ -28,14 +28,14 @@ FIESTA > Voxblox(fast、accuracy)
 
 [https://blog.csdn.net/Travis_X/article/details/115506278](https://blog.csdn.net/Travis_X/article/details/115506278)
 
-## Spherical approximations of collision bodies
+## Pre-work: Spherical approximations of collision bodies
 
 * decomposing the robot’s collision bodies for collision avoidance.
 * 为什么要把机器人各个部分近似成球体，因为方便查询球体中心到障碍物的距离，查询的点少，高效，算力小。
 * Approach:
   * 2018-ISR-Computation_of_Collision_Distance_and_Gradient_using_an_Automatic_Sphere_Approximation_of_the_Robot_Model_with_Bounded_Error
 
-### 地图构建方式
+## SDF update algorithm（package）
 
 ### Voxblox
 
@@ -54,12 +54,21 @@ FIESTA > Voxblox(fast、accuracy)
 *
 * ![1671003918335](image/SDF/1671003918335.png)
 
-## SDF from  Elevation map(2.5D)
+### GIE-mapping
+
+This software is a volumetric mapping system that effectively calculates Occupancy Grid Maps (OGMs) and Euclidean Distance Transforms (EDTs) with GPU.
+
+ref:
+GPU-accelerated Incremental Euclidean Distance Transform for Online Motion Planning of Mobile Robots
+
+## SDF from different Map structures
+
+#### SDF from  Elevation map(2.5D)
 
 ### Package
 
-* elevation_mapping_cupy
-* GEM
+* elevation_mapping_cupy(not yet)
+* GEM(not yet)
 
 ### Paper
 
@@ -75,16 +84,13 @@ FIESTA > Voxblox(fast、accuracy)
   * 用elevation map的上置信区间生成了SDF
 *
 
-## SDF from muti-elevation-map(2.5D~3D)
+#### SDF from muti-elevation-map(2.5D~3D)
 
 * a compromise between 2.5D and 3D mapping
 * ![1670770896351](image/SDF/1670770896351.png)
+* package used: elevation_map (RAW)
 
-### package
-
-* elevation_map (RAW)
-
-### Paper
+***Paper***
 
 * Walking Posture Adaptation for Legged Robot Navigation in Confined Spaces
   * a robot-centric multi-elevation map
@@ -93,17 +99,16 @@ FIESTA > Voxblox(fast、accuracy)
   * 文章做法：扩展了ETH elevation map,用grid map库，把地面估计出来，当作地板，把地板层添加进map中的一个layer，把地图从2.5D扩展成3D，再算SDF
   * SDF是怎么用进轨迹优化问题中的:CHOMP
 
-### Ref
+#### SDF from 3D volumetric maps(ESDF)
 
-## SDF from 3D volumetric maps(ESDF)
-
-### package
+***Package***
 
 * Voxblox
 * FIESTA
   * [https://www.sohu.com/a/345922274_715754](https://www.sohu.com/a/345922274_715754)
+* GIE-mapping(2022-RAL)
 
-### Paper
+***Paper***
 
 * A Collision-Free MPC for Whole-Body Dynamic Locomotion and
   Manipulation
@@ -114,13 +119,13 @@ FIESTA > Voxblox(fast、accuracy)
     * ![1670825295834](image/SDF/1670825295834.png)
     * ![1670825315479](image/SDF/1670825315479.png)
 
-## SDF in trajectory planning
+## Trajectory planning with SDF
 
 * 2013_CHOMP_Covariant Hamiltonian optimization for motion planning
-* CHOMP has been the foundation of many motion planners
-  foundation of many motion planners
+  * CHOMP has been the foundation of many motion planners
+    foundation of many motion planners
 
-## SDF from elevation map(Algorithm in perceptive TRO2022)
+## SDF from elevation map(Algorithm in TRO2022(perceptive))
 
 ### Step 1
 
