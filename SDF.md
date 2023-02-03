@@ -120,13 +120,17 @@ FIESTA > Voxblox(fast、accuracy)
 * CHOMP has been the foundation of many motion planners
   foundation of many motion planners
 
-## SDF in elevation map
+## SDF from elevation map(Algorithm in perceptive TRO2022)
 
-  1. 空间中一个点到最近障碍物的欧式平方距离：
+### Step 1
+
+   空间中一个点到最近障碍物的欧式平方距离：
   ![1675337525178](image/SDF/1675337525178.png)
   ![1675337548266](image/SDF/1675337548266.png)：障碍物0，empty cells 无穷
 
-  2.简化计算
+### Step 2
+
+简化计算
 ![1675338498488](image/SDF/1675338498488.png)
 ![1675338556272](image/SDF/1675338556272.png)
 ![1675338568179](image/SDF/1675338568179.png)
@@ -135,7 +139,9 @@ FIESTA > Voxblox(fast、accuracy)
 ref:
 “Distance transforms of sampled functions,”
 
-3.STEP 2中的计算产生问题：
+### Step 3
+
+STEP 2中的计算产生问题：
 当前计算SDF使用的是cell 中心点的距离到障碍物中心点的距离，会导致SDF梯度不连续
 ![1675339750117](image/SDF/1675339750117.png)
 
@@ -150,15 +156,16 @@ r：the resolution of the map
 ref:
 2017-RAS-Real-Time Motion Planning of Legged Robots: A Model Predictive Control Approach
 
-4.
+### Step 4
 
 compute distance transforms
 
 ref:
-A direct method for trajectory
-optimization of rigid bodies through contact
+A direct method for trajectory optimization of rigid bodies through contact
 
-5.for each height in parallel
+### Step 5
+
+for each height in parallel
 
 ref:
 “Distance transforms of sampled functions,”
